@@ -40,7 +40,8 @@ odpowiadajacych im komunikatach można znaleźć w (man errno).
 PROCES:  Proces reprezentuje program, który jest wykonywany, i ma przypisane zasoby systemowe. 
   Proces w systemie operacyjnym jest obiektem, który zarządza pamięcią, rejestrami, 
   otwartymi plikami, a także interakcjami z innymi procesami.
-
+  Dla każdego procesu istnieje inne miejsce w pamięci i zmienne mogą sie różnic.
+  
 ! -> UWAGA: Proces może wykonyważ co najwyżej jeden program, natomiast ten sam
 program może być wykonywany w dowolnej liczbie procesów.
 
@@ -78,7 +79,7 @@ grupy procesów i organizować zarządzanie procesami. Funkcja ta może być sku
 proces ma odpowiednie uprawnienia, np. jest procesem macierzystym procesu docelowego.
 
 [ 17:17 15.03.2025 ]
-Tworzenie procesów potomnych - funkcja systemowa fork
+2.2 Tworzenie procesów potomnych - funkcja systemowa fork
 
 Pliki włączane <-> <sys/types.h>, <unistd.h> (FOR LINUX)
 Prototyp           pid_t fork(void);
@@ -100,5 +101,106 @@ switch (fork())
 };
 
 A jakie są identyfikatory kiedy robimy: fork(); fork(); fork(); // czyli 8 - procesów.
+Podobno tylko dzieci czyli liście będa mieć identyfikator = 0.
+
+2.3 Kończenie działania procesu - funckje exit i _exit
+Pliki właczane <stdlib.h>
+Prototyp: void exit(int status);
+Zmienia errno: Nie
+
+Jednym ze sposobów zakończenia procesu jest wywołanie funkcji bibliotecznej exit.Funkcja ta wykonuje operacje zakończenia działania procesu i zwraca do procesu macierzystego calkowitoliczbową wartość status oznaczającą status zakończenia procesu. 
+OK -> 0
+BŁED -> Wartość niezerowa
+Istnieją również stałę EXIT_SUCCESS i EXIT_FAILURE, zdefiniowanych w pliku <stdlib.h> 
+Są też różne inne działania ale troche skąmplikowane.
+
+Funkcja atexit
+Pliki właczane <stdlib.h>
+Prototyp: void atexit( void (*function)(void) );
+Sukces -> 0
+Porażka -> nie 0 
+Czy zmienia errno -> Tak
+
+Funkcja atexit, pozwala zarejestrować funkcję, która będzie wywoływana przy normalnym zakończeniu procesu -
+ - albo poprzez wywoływanie funkcji exit, albo przez return z funkcji main.
+ 
+Przykład:
+void koniec(void){
+  puts("Koniec procesu - porządki zrobione");
+}
+
+int main(void){
+  if(atexit(koniec) != 0){
+    perror("atexit error");
+    exit(EXIT_FAILURE);
+  }
+}
+
+Funkcja _exit różni się od exit przede wszystkim tym, że jest wywołaniem systemowym, a nie funkcją biblioteki C.
+_exit() jest bardziej "brutalne" i kończy proces natychmiast, bez czyszczenia buforów i bez wywoływania funkcji atexit().
+Jest to funkcja systemowa (z unistd.h), a nie biblioteczna (stdlib.h).
+
+Zmienia errno -> Nie
+
+Generalnie:
+exit()  -> procesów macierzystych
+_exit() -> dla procesów potomnych (by uniknąc efektów ubocznych).
+
+2.4 Czekanie na procesy potomne - funkcja systemowa wait.
+
+Zombie -> Proces, który się zakończył, ale na który nie czekał żaden inny proces. Proces zombie nic nie robi, ale zajmuje miejsce w systemowej tabeli procesów.
+
+Pliki włączane <sys/types.h>, <sys/wait.h>
+Prototyp: pid_t wait(int *stat_loc);
+Sukces -> PID procesu potomnego
+Porażka -> -1
+Czy zmienia errno -> Tak
+
+Funkcja systemowa wait() w języku C służy do synchronizacji procesów. Umożliwia procesowi macierzystemu (parent) zaczekanie na zakończenie procesu potomnego (child) i pobranie jego statusu zakończenia.
+
+n.p.
+if(pid == 0){
+  // proces potomny
+} else {
+  // proces macierzysty
+  int status;
+  pid_t child_pid = wait(&status); // czekamy na zakończenie potomka.
+}
+
+Można pózniej użyc różnych makr zdefiniowanych w <sys/wait.h> by dostać informacje o zakończeniu procesu potomnego.
+n.p.
+WIF(Wait information flag)
+WIFSIGNALED(status) -> zwraca wartość prawdy jeśli proces został zakończony prez sygnał.
+WTERMSIG(status)    -> zwraca numer odpowiednego sygnału.
+
+Ciekawostka: Gdy parametr funkcji wait będzie ustawiony na NULL, to stan procesu potomnego nie
+zostanie zwrócony. Jeżeli dany proces nie ma procesów potomnych, to funkcja kończy się błedem
+i ustawia zmienną errno na ECHILD.
+
+UWAGA! -> funkcja wait czeka na zakończenie tylko jednego procesu potomnego - tego
+który zakończy się najwczesniej.
+
+Funkcja waitpid:
+Pliki właczane: <sys/types.h>, <sys/wait.h>
+prototyp: pid_t waitpid(pid_t pid, int *stat_loc, int options)
+Sukces  -> pid procesu potomnego lub 0
+Porażka -> -1 
+Zmienia errno -> Tak
+
+waitpid -> Daje trochę wiecej możliwośći niż prosta wait.
+
+2.5 Usypianie procesu - funkcja systemowa 'sleep'
+
+<unistd.h>
+Prototyp: unsigned sleep(unsigned seconds);
+Sukces -> Liczba nieprzespanych sekund
+Zmienia errno -> Nie
+(podobne są też usleep i nanosleep).
 
 
+Ćwiczenie 1.
+
+UWAGA! Przed fork(), getppid() zwraca PID procesu, który uruchomił aplikację. W praktyce jest to proces systemowy (np. proces init lub systemd na systemach Linux), ponieważ to ten proces uruchamia procesy użytkownika.
+
+a) Po prostu wypisujesz wszystkie te indentyfikatory
+b) Już troche trudniej
