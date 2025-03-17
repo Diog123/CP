@@ -1,0 +1,88 @@
+1991: Linus Torvalds UNIX -> LINUX (nie dokładnie ale jakoś tak)
+Dystrybucje Linuksa: jądro systemu + użyteczne pakiety oprogramowania.
+n.p(Debian, Ubuntu, Arch Linux...)
+
+WSL(Windows Subsystem for Linux) - umożliwia uruchamianie pewnych składowych
+środowiska Linuksa bezpośrednio w systemie Windows.
+
+Powłoka Linuksa (ang. shell)
+Istnieje nie jedna powłoka do użyawania.
+
+$ echo $SHELL -> mówi nam jaką mamy powłoke.
+$ chsh  -s /bin/zsh -> zmiana powłoki (n.p na zsh)  (chsh (change shell)
+$ cat /etc/shells -> dostępne shelle na swoim systemie pokazuje.
+$ quota -> sprawdza ile zasobów z dysku używasz.
+$ quota -s -> w formacie 'human readable'
+
+Użytkownicy są pod /home
+
+Przeglądanie systemy plików.
+
+$ ls /        -> zawartość katalogu głownego
+$ tree -L 1 / -> to samo w formie drzewa.
+$ ls /home    -> zawartość katalogu home.(użytkownicy)
+$ pwd         -> ścieżka do bieżącego katalogu
+$ ls -l       -> ze szczegółami (daty, MB, user, etc.)
+$ ls -a       -> też pliki ukryte
+$ ls -al      -> ?
+$ ls -altr    -> ?
+
+Operacje na plikach / katalogach
+$ mkdir name    -> utwórz katalog o nazwie name
+$ cd name       -> wejdź do katalogu name
+$ cd ..         -> przejdz do katalogu macierzystego.
+$ cd            -> przejdz to katalogu domowego, to samo: cd ~ 
+$ cd name; pwd  -> wróć do katalogy name i pokaż ścieżkę
+$ touch name0   -> utwórz pusty plik o nazwie name0
+
+ls -altr ~ > plik1.txt -> wyniki polecenia przekieruj (>) do pliku plik1.txt
+less plik1.txt         -> to samo co cat ale otwiera takiego małego vima.
+mv name_0 name_1       -> zmien nazwę pliku name_0 na name_1
+mv name_0 katalog/     -> przenieś plik name_0 do podkatalogu 'katalog'
+ls -l kat2             -> (all info) dla kat2
+cp pl1.txt pl2.txt     -> utwórz kopię pliku pl1.txt o nazwie pl2.txt
+rm pl1.txt             -> usuń plik pl1.txt
+rm -r kat1             -> usuń katalog wraz z całą zawartośćią - OSTROŻNIE!!
+
+OPERACJE NA PROCESACH:
+~ Proces – program w trakcie wykonywania; każdy proces ma swój unikalny
+identyfikator w systemie: PID; hierarchiczna struktura procesów.
+
+ps        -> wyświetla procesy bieżącej powłoki
+ps -e     -> wszystkie procesy
+pstree    -> całe drzewo procesów (opcja -p dodaje PID każdego procesu)
+top       -> najważniejsze procesy z informacją o użyciu
+xterm     -> ??
+Ctrl-Z    -> zawieszenie procesu działającego w pierwszym planie
+Ctrl-C    -> zakończenie procesu działającego w pierwszym planie
+bg        -> uruchomienie zawieszonego procesu w tle
+fg        -> 
+echo c | sudo tree /proc/sysqe-trigger  -> kernel panic (crash)
+
+Kompresja i archiwizacja 
+gzip plik1.txt            -> kompresuje plik1.txt -> dodaje rozszerzenie .gz
+gunzip plik1.txt.gz       -> dekompresuje plik1.txt.gz do pliku plik1.txt
+tar cvzf kat1.tar.gz kat1 -> archiwizacja i kompresja katalogu kat1 do kat1.tar.gz
+tar xvzf kat1.tar.gz      -> dekompresja i dearchiwizacja kat1.tar.gz
+touch p1.txt p2.txt p3.txt p4.txt
+rm *.txt                             -> usuwa wszystkie pliki o rozszerzeniu .txt
+
+ Zdalne logowanie oraz przesyłanie plików 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
