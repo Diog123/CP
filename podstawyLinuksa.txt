@@ -69,20 +69,23 @@ rm *.txt                             -> usuwa wszystkie pliki o rozszerzeniu .tx
 
  Zdalne logowanie oraz przesyłanie plików 
  
+ssh IP                		          -> logowanie na serwer SPK z zewnątrz przez adres IP
+ssh spk-ssh.if.uj.edu.pl 		  -> jak wyżej, tylko przez nazwę internetową serwera
+exit                      		  -> wylogowanie
+scp -r spk-ssh.if.uj.edu.pl:kat2/         -> przesłanie katalogu kat2 
  
- 
- 
- 
- 
- 
- 
- 
+Pomoce systemowe
+man man        -> opis samego podręcznika
+man ls         -> ops polecenia ls
+info ls        -> barzdziej szczegółowy opis ls 
+help cd        -> opis wybudowanych poleceń powłoki bash
 
+history          -> wyświetla historię poleceń wraz z ich numerami
+!numer_polecenia -> uruchamia polecenie o danym numerze
 
+Dodatkowe:
+cp -r kat1 kat2                      -> utwórz kopię katalogu kat1 o nazwie kat2
+scp kat1.tar.gz spk-ssh.adres:kat2/  -> przesłanie pliku kat1.tar.gz na # zdalny komputer do katalogu kat2 po spk jest "adres"
+mkdir kat2; cp kat1.tar.gz kat2/;    -> archiwizacja i kompresja katalogu kat1 # do pliku kat1.tar.gz
 
-
-
-
-
-
-
+co robi -r -s 
