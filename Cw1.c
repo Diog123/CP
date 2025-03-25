@@ -43,3 +43,50 @@ int main(){
 
     return 0;
 }
+//                    /\     /\ 
+//                  {  `---'  }
+//                  {  O   O  }
+//                  ~~>  V  <~~
+//                   \ \|/ /
+//                    `---'____
+//                   /     \    \_
+//                  {       }\  )_\_)-.
+//                  |  \_/  ) / /  \ \
+//                   \__/  /(_/     \_)
+//                     (__/
+//                /\_/\
+//               ( o.o ) 
+//                > ^ <
+//                /     \
+//               (       )
+//              ( /     \ )
+//             ( /       \)
+
+// Ćwiczenie 3: podpunkt a)
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/types.h>
+#include<signal.h>
+#include<unistd.h>
+
+void sig_handler(int sig){
+        if(sig == SIGINT){
+                printf("blah blah bleh bleh operacja własna obsługa\n");
+                sleep(10);
+                return ;
+
+        }
+}
+
+int main(){
+        //signal(SIGTSTP, SIG_IGN); // program od teraz będzie ignorował (Ctrl-Z)
+        //pause();
+        signal(SIGINT, sig_handler);
+        pause();
+        while(1) { // przerwanie z klawiatury a czy program dalej działa?
+                printf("siema\n");
+                sleep(1);
+        }
+        return 0;
+}
