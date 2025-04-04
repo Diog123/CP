@@ -204,3 +204,135 @@ UWAGA! Przed fork(), getppid() zwraca PID procesu, który uruchomił aplikację.
 
 a) Po prostu wypisujesz wszystkie te indentyfikatory
 b) Już troche trudniej
+c)
+d) 
+e)
+						
+Funckja systemowa exec
+~ W C/Unix exec zastępuje proces nowym programem.
+
+Ćwiczenie 2
+
+Funkcja systemowa exec
+- służy do ponownego zainicjowania procesu na podstawie wskazanego programu.
+- istnieje sześć odmian funkcji exec zgrupowanych w dwie rodziny (po trzy funkcje). Rodziny różnią
+  się postacią argumentów: l(lista), v(vertow) w(tablica)
+
+Pliki właczane <unistd.h>
+Prototyp:
+     int execl(const char *path, const char *arg0, .. const char *argn, char *null);
+     int execv(const char *path, const char *argv[ ] );
+Zwracana wartość:
+Sukces -> Nic
+Porażka -> -1
+Czy zmienia errno -> Tak.
+
+Funkcje z rodziny exec w Unix/Linux służą do zastępowania bieżącego procesu nowym programem. Gdy używasz exec, obecnie działający program jest całkowicie zastępowany przez nowy, zachowując tylko ten sam PID (identyfikator procesu).
+
+Na końcu coś takiego chcemy
+  1 #include<unistd.h>
+  1 #include<stdio.h>
+  2   
+  3 int i, j, k;
+  4   
+  5 int main(int argc, char *argv[]){
+  6     char *PATH = argv[1];
+  7     // jakoś użyć execlp
+  8     printf("PID %d\n", getpid());
+  9     execlp(PATH, PATH, (char *) NULL);
+ 10     perror("execlp error\n");
+ 11     _exit(2);
+ 12     return 0;
+ 13 }  
+
+Jak zrobić MAKEFILE ? ? ? 	
+
+# <- to jest komentarz 
+
+CC = gcc (tak np. ustawiam sobie kompilator)
+pózniej moge robic $(CC) -> gcc lub "" jak jest nie zdefiniowane. :)
+
+Moje pierwsze makefile:
+###############################################
+#set list! -> żeby ci pokazywało white spaces.
+#set noexpandtab -> bo inaczej się jebie
+CC = gcc 
+CFLAGS = -Wall                   # tutaj można dodać więcej
+PROG = Zadanie2
+
+.PHONY: clean tar                # nwm coś safe practice
+
+final:                           # kompiluje a.c
+	$(CC) a.c -o final.out
+
+clean:                           # usuwa wszystkie pliki .out
+	rm -f *.out
+
+tar : clean
+	tar -cvzf $(PROG).tar.gz *
+
+###############################################
+DLA KOPIOWONIA
+#set list! -> żeby ci pokazywało white spaces.
+#set noexpandtab -> bo inaczej się jebie
+CC = gcc 
+CFLAGS = -Wall
+PROG = Zadanie2
+
+.PHONY: clean tar
+
+final:
+	$(CC) a.c -o final.out
+
+clean:
+	rm -f *.out
+
+tar : clean
+	tar -cvzf $(PROG).tar.gz *
+#################################################
+
+SYGNAŁY ==============================================================================================================================================================================================
+
+Co to jest sygnał ? -> 
+Co robią syngały  ? -> umożliwiają asynchroniczne przerwanie działania procesu
+                 przez inny proces lub jądro.
+
+Z kąd pochodzą ? 
+- Od sprzętu: kiedy jakiś proces próbuje uzyskać dostęp ;:adresów spoza własnej przestrzeni adresowej 
+  lub kiedy zostanie w nim dzielenie przez zero.
+- Od jądra  : są to sygnały powiadamiające proces o dostępności urządzeń wejścia - wyjście, na które
+              proces czekał, np. o dostępności terminala
+          
+- Od innych procesów: proces potomny powiadamia swego przodka o tym, że się zakończył.
+- Od użytkowników   : użytkownicy mogą generować sygnały zakończenia, przerwania, lub stopu
+                      za pomocą klawiatury: (sprawdź sobie komendą 'stty - a')
+;
+Nazwy sygnałow udostępnianych w systemie prechowywane są w tablicy sys_siglist[], która jest indeksowana ich numerami.
+Należy użyć:
+extern const char * const sys_siglist[];
+
+Nowszą wersią funkcja 'strsignal'
+Prototyp: char *strsignal(int sig) -> "nazwę sygnału" lub "unknown signal"
+
+REAKCJA PROCESU NA OTRZYMANY SYNGAŁ:
+1) Wykonać domyślną operację(default reaction). -> to zależy od sygnału zazwyczaj zakończenie procesu.
+2) Zignorować sygnał: wszystkie oprócz 'SIGSTOP' i 'SIGKILL'
+3) Prechwycić sygnał: wszystkie oprócz 'SIGSTOP' i 'SIGKILL'
+
+A jaka różnica między 1 i 3?
+
+~ Wysyłanie sygnałow (używa się funkcji kill)
+Pliki: <sys/types.h>, <signal.h>
+Prototyp: int kill(pid_t pid, int sig)
+
+Zwracana wartość:
+Sukces: 0
+Porażka: -1
+Czy zmienia errno -> Tak
+
+pid      kto odbiera sygnał
+> 0      Proces o PID = pid
+= 0      Procesy należące do samej grupy co proces wysyłający sygnał
+< -1     Procesy należące do grupy o PGID = -pid.-
+
+
