@@ -293,7 +293,7 @@ tar : clean
 
 SYGNAŁY ==============================================================================================================================================================================================
 
-Co to jest sygnał ? -> 
+Co to jest sygnał ? -> najprostsza metoda komunikacji międzyprocesowej.
 Co robią syngały  ? -> umożliwiają asynchroniczne przerwanie działania procesu
                  przez inny proces lub jądro.
 
@@ -334,5 +334,61 @@ pid      kto odbiera sygnał
 > 0      Proces o PID = pid
 = 0      Procesy należące do samej grupy co proces wysyłający sygnał
 < -1     Procesy należące do grupy o PGID = -pid.-
+
+Funkcja alarm generuje sygnał kiedy minie ustalona liczba sekund, przekazana przez parametr sec.
+
+Obsługa sygnałów.
+<signal.h>
+void (*signal(int sig, void (*handler)(int)))(int);
+modyfikuje sposób w jaki proces reaguje.
+na jakiś sygnał.
+
+pierwszy parametr to numer sygnału, 
+drugi to wskaźnik do funkcji która ma być wywołana.
+
+pause - zawiesza proces aż do czasu odebrania sygbału.
+
+
+=========================================================================================
+Potoki
+
+Potok można uznać za plik specjalnego typu, który służy do przechowywania danych i 
+do którego dostęp może się odbywać jedynie w trybie FIFO. 
+
+( <limits.h>, <sys/param.h> )
+PIPE_BUF -> maksymalna liczba bajtów , jaką można zapisać w potoku.
+
+Potoki zapewniają prosty synchroniczny sposób wymiany danych między procesami.
+Odczytane dane z potoku są usuwane.
+
+Kiedy nie można odczytać lub zapisać to zablokuje się do póki można.
+
+<unistd.h>
+ssize_t write(int filedes, const void *buf, size_t nbyte);
+Sukces -> liczba zapisanych bajtów.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
